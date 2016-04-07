@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Data Sync Demo</string>
+    <string name="title_activity_main">Data Sync Demo</string>
+    <string name="title_activity_something">Something</string>
+
+    <string name="edit">Edit</string>
+    <string name="refresh">Refresh</string>
+
+    <string name="id_label">id: %s</string>
+    <string name="error_name_empty">Name can\'t be empty</string>
+    <string name="edit_success">Changes saved</string>
+    <string name="content_outdated">Content may be outdated</string>
+</resources>
