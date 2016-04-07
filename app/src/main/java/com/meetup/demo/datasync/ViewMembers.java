@@ -46,7 +46,7 @@ public class ViewMembers extends BaseActivity implements
     @InjectView(R.id.toolbar) Toolbar toolbar;
     private Snackbar refreshBar;
 
-    private CompositeSubscription resumeSubs;
+    private CompositeSubscription onPauseSubs;
 
     private MembersAdapter adapter;
     private PaginatedMembers members;
@@ -82,7 +82,7 @@ public class ViewMembers extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        resumeSubs = Subscriptions.from();
+        onPauseSubs = Subscriptions.from();
         // refresh if needed
         boolean needsRefreshing = !members.hasTotal();
         long updatesFromTime;
@@ -94,7 +94,7 @@ public class ViewMembers extends BaseActivity implements
         }
 
         // start listening to event broadcasts.
-        resumeSubs.add(memberUpdates.observable(updatesFromTime)
+        onPauseSubs.add(memberUpdates.observable(updatesFromTime)
                 // debounce so we don't show snackbar for each update emitted in succession
                 .debounce(100, TimeUnit.MILLISECONDS)
                 .observeOn(uiScheduler)
@@ -103,7 +103,7 @@ public class ViewMembers extends BaseActivity implements
 
     @Override
     protected void onPause() {
-        resumeSubs.unsubscribe();
+        onPauseSubs.unsubscribe();
         super.onPause();
     }
 
