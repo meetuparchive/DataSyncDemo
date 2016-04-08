@@ -146,7 +146,7 @@ public class ViewMembers extends BaseActivity implements
         members.invalidateAll();
         adapter.notifyDataSetChanged();
         if (!members.hasTotal()) {
-            // first fetch to set the total
+            // first fetch to set the total from the server
             subs.add(members.get(0)
                     .compose(ErrorUi.catchAndToast(this))
                     .observeOn(uiScheduler)
