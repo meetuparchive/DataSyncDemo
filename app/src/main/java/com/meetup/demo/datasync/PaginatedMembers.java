@@ -56,9 +56,10 @@ public class PaginatedMembers extends PaginationCache<Member> {
     public Observable<List<Member>> fetchPage(int page) {
         return api.members(page, getPageSize())
                 .doOnNext(response -> {
-                    int oldTotal = currentTotal.getAndSet(response.total);
-                    if (oldTotal != response.total) {
-                        newTotals.onNext(new Pair<>(oldTotal, response.total));
+                    int newTotal = response.meta.getInt("totalMembers", -1);
+                    int oldTotal = currentTotal.getAndSet(newTotal);
+                    if (oldTotal != newTotal) {
+                        newTotals.onNext(new Pair<>(oldTotal, newTotal));
                     }
                 })
                 .map(response -> response.data);

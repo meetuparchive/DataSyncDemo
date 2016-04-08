@@ -1,6 +1,7 @@
 package com.meetup.demo.datasync.api;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
 import android.os.SystemClock;
 
 import com.google.common.collect.Iterables;
@@ -41,7 +42,7 @@ public class DemoApiBase implements DemoApi {
     }
 
     @Override
-    public Observable<Response<List<Member>>> members(int page, int pageSize) {
+    public Observable<DemoResponse<List<Member>>> members(int page, int pageSize) {
         return create(subscriber -> {
             List<Member> allInts = fetchAllMembers();
             int total = allInts.size();
@@ -50,14 +51,16 @@ public class DemoApiBase implements DemoApi {
             if (start >= total) {
                 subscriber.onCompleted();
             } else {
-                subscriber.onNext(new Response<>(total, allInts.subList(start, end)));
+                Bundle meta = new Bundle();
+                meta.putInt("totalMembers", total);
+                subscriber.onNext(new DemoResponse<>(meta, allInts.subList(start, end)));
                 subscriber.onCompleted();
             }
         });
     }
 
     @Override
-    public Observable<Response<Member>> member(long id) {
+    public Observable<DemoResponse<Member>> member(long id) {
         return create(subscriber -> {
             // randomly error for demo's sake
             if (random.nextFloat() < .4) {
@@ -66,7 +69,9 @@ public class DemoApiBase implements DemoApi {
             }
             Member member = getMember(id);
             if (member != null) {
-                subscriber.onNext(new Response<>(membersList.size(), member));
+                Bundle meta = new Bundle();
+                meta.putInt("totalMembers", membersList.size());
+                subscriber.onNext(new DemoResponse<>(meta, member));
             } else {
                 // custom `ApiError` would be better
                 subscriber.onError(new IllegalStateException("member doesn't exist"));
@@ -75,11 +80,13 @@ public class DemoApiBase implements DemoApi {
         });
     }
 
-    public Observable<Response<Member>> editMember(long id, String newName) {
+    public Observable<DemoResponse<Member>> editMember(long id, String newName) {
         return create(subscriber -> {
             Member member = updateMemberName(id, newName);
             if (member != null) {
-                subscriber.onNext(new Response<>(membersList.size(), member));
+                Bundle meta = new Bundle();
+                meta.putInt("totalMembers", membersList.size());
+                subscriber.onNext(new DemoResponse<>(meta, member));
             } else {
                 // custom `ApiError` would be better
                 subscriber.onError(new IllegalStateException("member doesn't exist"));
