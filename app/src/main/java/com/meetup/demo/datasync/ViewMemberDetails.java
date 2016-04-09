@@ -100,7 +100,7 @@ public class ViewMemberDetails extends BaseActivity implements
                 .doOnUnsubscribe(() -> nameText.setEnabled(true))
                 .subscribe(
                     response -> {
-                        Member newMember = response.data;
+                        Member newMember = response.results;
                         memberUpdates.post(new MemberUpdate(this.member, newMember));
                         bindMember(newMember);
                         showEditSuccessBar();
@@ -115,7 +115,7 @@ public class ViewMemberDetails extends BaseActivity implements
     @Override
     public void onRefresh() {
         subs.add(api.member(member.id)
-                .map(response -> response.data)
+                .map(response -> response.results)
                 .compose(ErrorUi.catchAndToast(this))
                 .observeOn(uiScheduler)
                 .doOnUnsubscribe(() -> swipeLayout.setRefreshing(false))

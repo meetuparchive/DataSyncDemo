@@ -62,6 +62,6 @@ public class PaginatedMembers extends PaginationCache<Member> {
                         newTotals.onNext(new Pair<>(oldTotal, newTotal));
                     }
                 })
-                .map(response -> response.data);
+                .map(response -> response.results);
     }
 }
